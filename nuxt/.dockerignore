@@ -1,0 +1,41 @@
+# Dependencies
+node_modules
+
+# Build outputs (rebuilt during build)
+.nuxt
+.output
+
+# Development files
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+*.md
+
+# Cache
+.cache
+.image-cache
+.nuxt
+
+# Editor directories
+.idea
+.vscode
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test files
+tests
+coverage
+*.test.ts
+*.spec.ts
+
+# Docker
+Dockerfile
+.dockerignore

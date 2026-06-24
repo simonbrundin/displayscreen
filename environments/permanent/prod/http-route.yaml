@@ -1,0 +1,27 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: spc-display-route
+  namespace: displayscreen
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: simons-gateway
+      namespace: envoy
+  hostnames:
+    - "spc.simonbrundin.com"
+  rules:
+    - backendRefs:
+        - group: ""
+          kind: Service
+          name: spc-displayscreen-service
+          port: 80
+          weight: 1
+          namespace: displayscreen
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+      timeouts:
+        request: 30s

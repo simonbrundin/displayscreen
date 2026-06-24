@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spc-displayscreen
+  namespace: displayscreen
+  labels:
+    app.kubernetes.io/name: displayscreen
+    app.kubernetes.io/component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: displayscreen
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: displayscreen
+    spec:
+      containers:
+        - name: displayscreen
+          image: ghcr.io/simonbrundin/spc-displayscreen:v1.0.0
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: GOOGLE_DRIVE_FOLDER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: displayscreen-secrets
+                  key: google-drive-folder-id
+            - name: GOOGLE_SERVICE_ACCOUNT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: displayscreen-secrets
+                  key: google-service-account-key
+            - name: SLIDE_INTERVAL
+              value: "30000"
+          livenessProbe:
+            httpGet:
+              path: /api/images
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api/images
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
