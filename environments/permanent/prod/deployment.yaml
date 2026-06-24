@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: displayscreen
-          image: ghcr.io/simonbrundin/spc-displayscreen:v1.0.0
+          image: ghcr.io/simonbrundin/spc-displayscreen:v1.0.1
           imagePullPolicy: Always
           ports:
             - name: http

@@ -127,7 +127,18 @@ export default defineEventHandler(async () => {
 		return { images: [], count: 0, timestamp: new Date().toISOString() };
 	}
 
-	const credentials = loadServiceAccountKey();
+	// Use runtimeConfig for credentials (works for both dev and prod)
+	let credentials: Record<string, unknown> | null = null;
+	if (config.googleServiceAccountKey) {
+		try {
+			credentials = JSON.parse(config.googleServiceAccountKey);
+		} catch {
+			console.error("Failed to parse googleServiceAccountKey");
+		}
+	} else {
+		credentials = loadServiceAccountKey();
+	}
+
 	if (!credentials) {
 		return { images: [], count: 0, timestamp: new Date().toISOString() };
 	}
