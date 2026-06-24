@@ -134,10 +134,15 @@ export default defineEventHandler(async () => {
 	let credentials: Record<string, unknown> | null = null;
 	if (config.googleServiceAccountKey) {
 		console.log("Using credentials from runtimeConfig");
-		try {
-			credentials = JSON.parse(config.googleServiceAccountKey);
-		} catch (e) {
-			console.error("Failed to parse googleServiceAccountKey:", e);
+		// googleServiceAccountKey can be either a string or an object depending on how it's set
+		if (typeof config.googleServiceAccountKey === "string") {
+			try {
+				credentials = JSON.parse(config.googleServiceAccountKey);
+			} catch (e) {
+				console.error("Failed to parse googleServiceAccountKey:", e);
+			}
+		} else {
+			credentials = config.googleServiceAccountKey as Record<string, unknown>;
 		}
 	} else {
 		console.log("No googleServiceAccountKey in config, trying file");
