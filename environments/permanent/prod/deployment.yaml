@@ -8,6 +8,8 @@ metadata:
     app.kubernetes.io/component: frontend
 spec:
   replicas: 1
+  imagePullSecrets:
+    - name: ghcr-secret
   selector:
     matchLabels:
       app.kubernetes.io/name: displayscreen
