@@ -25,17 +25,17 @@ spec:
               containerPort: 3000
               protocol: TCP
           env:
-            - name: GOOGLE_DRIVE_FOLDER_ID
+            - name: NUXT_GOOGLE_DRIVE_FOLDER_ID
               valueFrom:
                 secretKeyRef:
                   name: displayscreen-secrets
                   key: google-drive-folder-id
-            - name: GOOGLE_SERVICE_ACCOUNT_KEY
+            - name: NUXT_GOOGLE_SERVICE_ACCOUNT_KEY
               valueFrom:
                 secretKeyRef:
                   name: displayscreen-secrets
                   key: google-service-account-key
-            - name: SLIDE_INTERVAL
+            - name: NUXT_PUBLIC_SLIDE_INTERVAL
               value: "30000"
           livenessProbe:
             httpGet:
