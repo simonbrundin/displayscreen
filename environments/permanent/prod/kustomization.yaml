@@ -5,4 +5,5 @@ resources:
   - namespace.yaml
   - service.yaml
   - deployment.yaml
+  - http-route.yaml
   - secrets/displayscreen-secrets.enc.yaml
