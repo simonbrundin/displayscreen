@@ -124,24 +124,32 @@ export default defineEventHandler(async () => {
 
 	// Fetch from Google Drive
 	if (!config.googleDriveFolderId) {
+		console.log("No googleDriveFolderId in config");
 		return { images: [], count: 0, timestamp: new Date().toISOString() };
 	}
+
+	console.log("googleDriveFolderId:", config.googleDriveFolderId);
 
 	// Use runtimeConfig for credentials (works for both dev and prod)
 	let credentials: Record<string, unknown> | null = null;
 	if (config.googleServiceAccountKey) {
+		console.log("Using credentials from runtimeConfig");
 		try {
 			credentials = JSON.parse(config.googleServiceAccountKey);
-		} catch {
-			console.error("Failed to parse googleServiceAccountKey");
+		} catch (e) {
+			console.error("Failed to parse googleServiceAccountKey:", e);
 		}
 	} else {
+		console.log("No googleServiceAccountKey in config, trying file");
 		credentials = loadServiceAccountKey();
 	}
 
 	if (!credentials) {
+		console.error("No credentials found");
 		return { images: [], count: 0, timestamp: new Date().toISOString() };
 	}
+
+	console.log("Credentials found, client_email:", (credentials as any).client_email);
 
 	const auth = new google.auth.GoogleAuth({
 		credentials,
@@ -150,11 +158,13 @@ export default defineEventHandler(async () => {
 	const drive = google.drive({ version: "v3", auth });
 
 	try {
+		console.log("Fetching from Google Drive...");
 		const response = await drive.files.list({
 			q: `'${config.googleDriveFolderId}' in parents and mimeType contains 'image/'`,
 			fields: "files(id, name, mimeType, modifiedTime)",
 			orderBy: "name",
 		});
+		console.log("Google Drive response:", response.data.files?.length, "files found");
 
 		cachedFiles = (response.data.files || []) as DriveFile[];
 		cacheTimestamp = Date.now();
