@@ -36,32 +36,28 @@ watch(() => apiData.value, () => {
       <div class="spinner"></div>
       <span>Laddar...</span>
     </div>
-    
+
     <!-- Error state -->
     <div v-else-if="error" class="error">
       <span>Kunde inte ladda bilder</span>
       <button @click="refresh">Försök igen</button>
     </div>
-    
+
     <!-- Empty state -->
     <div v-else-if="images.length === 0" class="empty">
       <span>Inga bilder hittades</span>
       <small> Kontrollera att Google Drive-mappen har bilder </small>
     </div>
-    
+
     <!-- Single image display (portrait) -->
     <template v-else-if="step === 1">
       <Transition name="fade" mode="out-in">
-        <img
-          v-if="currentSlide"
-          :key="currentSlide.id"
-          :src="currentSlide.url"
-          :alt="currentSlide.name"
-          class="slide-image single"
-        />
+        <div v-if="currentSlide" :key="currentSlide.id" class="portrait-container">
+          <img :src="currentSlide.url" :alt="currentSlide.name" class="slide-image single" />
+        </div>
       </Transition>
     </template>
-    
+
     <!-- Double image display (landscape) -->
     <div v-else-if="step === 2" class="grid-container">
       <div class="image-cell left">
@@ -106,7 +102,9 @@ watch(() => apiData.value, () => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .error button {
@@ -123,11 +121,21 @@ watch(() => apiData.value, () => {
   font-size: 0.875rem;
 }
 
-/* Single image layout (portrait/default) */
+/* Portrait image layout - fills screen when rotated */
+.portrait-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .slide-image.single {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  /* After -90° rotation: original height becomes visual width */
+  max-width: 100vh;
+  max-height: 100vw;
+  transform: rotate(-90deg);
 }
 
 /* Double image layout (landscape) */
