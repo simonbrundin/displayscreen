@@ -20,6 +20,7 @@ export default defineNuxtConfig({
 		// Public (exposed to client)
 		public: {
 			slideInterval: 30000,
+			imagesBeforeRefresh: 10,
 		},
 	},
 
@@ -44,11 +45,19 @@ export default defineNuxtConfig({
 	},
 
 	routeRules: {
-		// Cache API responses for better performance
+		// Cache HTML pages - auto-updates based on slide interval and refresh count
+		// Cache time = slideInterval * imagesBeforeRefresh
+		// Default: 30s * 10 = 5 min
+		"/**": {
+			headers: {
+				"Cache-Control": `max-age=${Math.round((Number(process.env.NUXT_PUBLIC_SLIDE_INTERVAL) || 30000) / 1000 * (Number(process.env.NUXT_PUBLIC_IMAGES_BEFORE_REFRESH) || 10))}, must-revalidate`,
+			},
+		},
+		// Cache API responses
 		"/api/images": {
 			cache: {
-				maxAge: 60, // 1 minute
-				staleMaxAge: 300, // 5 minutes
+				maxAge: 60,
+				staleMaxAge: 300,
 			},
 		},
 	},
